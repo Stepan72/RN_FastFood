@@ -13,8 +13,10 @@ import {
   Bars3CenterLeftIcon,
   MagnifyingGlassIcon,
 } from "react-native-heroicons/solid";
-import { categories } from "../constants";
+import { categories, foodItems } from "../constants";
 import { Category } from "../types";
+import * as Animatable from "react-native-animatable";
+import FoodCard from "../components/FoodCard";
 
 export default function HomeScreen() {
   const [activeCategory, setActiveCategory] = useState<Category>("Burger");
@@ -63,7 +65,7 @@ export default function HomeScreen() {
         </View>
         {/* Categories  */}
         <ScrollView
-          className="my-6 py-6 max-h-20"
+          className="mt-4 pt-6 max-h-20"
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 20 }}
@@ -72,27 +74,43 @@ export default function HomeScreen() {
             const isActive = category === activeCategory;
             const activeTextClass = isActive ? "text-red-500" : "";
             return (
-              <TouchableOpacity
-                className="mr-8"
-                onPress={() => {
-                  setActiveCategory(category);
-                }}
+              <Animatable.View
+                delay={index * 120}
+                animation="slideInDown"
+                key={index}
               >
-                <Text
-                  className={`text-white text-base tracking-widest ${activeTextClass}`}
+                <TouchableOpacity
+                  className="mr-8"
+                  onPress={() => {
+                    setActiveCategory(category);
+                  }}
                 >
-                  {category}
-                </Text>
-                {isActive && (
-                  <View className="flex-row justify-center">
-                    <Image
-                      className="h-4 w-5"
-                      source={require("../assets/images/line.png")}
-                    />
-                  </View>
-                )}
-              </TouchableOpacity>
+                  <Text
+                    className={`text-white text-base tracking-widest ${activeTextClass}`}
+                  >
+                    {category}
+                  </Text>
+                  {isActive && (
+                    <View className="flex-row justify-center">
+                      <Image
+                        className="h-4 w-5"
+                        source={require("../assets/images/line.png")}
+                      />
+                    </View>
+                  )}
+                </TouchableOpacity>
+              </Animatable.View>
             );
+          })}
+        </ScrollView>
+        {/* food cards */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+        >
+          {foodItems.map((item, index) => {
+            return <FoodCard key={index} {...item} index={index} />;
           })}
         </ScrollView>
       </SafeAreaView>
