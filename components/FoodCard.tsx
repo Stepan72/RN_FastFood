@@ -1,16 +1,14 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
-import { ImageSourcePropType } from "react-native";
 import { ShoppingBagIcon } from "react-native-heroicons/solid";
+import * as Animatable from "react-native-animatable";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
+import { StackParamList } from "../types";
+import { FoodCardProps } from "../types";
 
-interface FoodCardProps {
-  name: string;
-  price: string;
-  ingredients: string;
-  desc: string;
-  image: ImageSourcePropType;
-  index: number;
-}
+type Props = NativeStackScreenProps<StackParamList, "FoodDetails">;
+type FoodDetailsNavigationProp = Props["navigation"];
 
 export default function FoodCard({
   name,
@@ -20,8 +18,12 @@ export default function FoodCard({
   image,
   index,
 }: FoodCardProps) {
+  const navigation = useNavigation<FoodDetailsNavigationProp>();
+
   return (
-    <View
+    <Animatable.View
+      delay={index * 120}
+      animation="slideInRight"
       style={{ backgroundColor: "#ffffff33" }}
       className="w-56 h-70 my-4 mr-6 p-3 py-5 rounded-3xl"
     >
@@ -36,10 +38,22 @@ export default function FoodCard({
       </View>
       <View className="flex-row justify-between items-center px-1">
         <Text className="text-white font-semibold text-2xl">$ {price}</Text>
-        <TouchableOpacity className="bg-white p-3 rounded-full">
+        <TouchableOpacity
+          className="bg-white p-3 rounded-full"
+          onPress={() => {
+            navigation.navigate("FoodDetails", {
+              name,
+              price,
+              ingredients,
+              desc,
+              image,
+              index,
+            });
+          }}
+        >
           <ShoppingBagIcon size={24} color="black" />
         </TouchableOpacity>
       </View>
-    </View>
+    </Animatable.View>
   );
 }
